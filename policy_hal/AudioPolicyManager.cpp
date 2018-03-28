@@ -1561,7 +1561,10 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevice(
              }
         }
 
-        if (!voip_pcm_already_in_use) {
+        if (!voip_pcm_already_in_use &&
+            (audio_channel_count_from_out_mask(channelMask) == 1) &&
+            (samplingRate == 8000 || samplingRate == 16000 ||
+             samplingRate == 32000 || samplingRate == 48000)) {
             flags = (audio_output_flags_t)(AUDIO_OUTPUT_FLAG_VOIP_RX |
                                            AUDIO_OUTPUT_FLAG_DIRECT);
             ALOGV("Set VoIP and Direct output flags for PCM format");
@@ -1823,19 +1826,24 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevice(
                     outputDesc = desc;
                     // reuse direct output if currently open by the same client
                     // and configured with same parameters
-                    if ((samplingRate == outputDesc->mSamplingRate) &&
-                            audio_formats_match(format, outputDesc->mFormat) &&
-                            (channelMask == outputDesc->mChannelMask)) {
-                        if (session == outputDesc->mDirectClientSession) {
-                            outputDesc->mDirectOpenCount++;
-                            ALOGV("getOutput() reusing direct output %d for session %d",
-                            mOutputs.keyAt(i), session);
-                            return mOutputs.keyAt(i);
-                        } else {
-                            ALOGV("getOutput() do not reuse direct output because current client (%d) "
-                                  "is not the same as requesting client (%d)",
-                                  outputDesc->mDirectClientSession, session);
-                            goto non_direct_output;
+                    for (int curStream = 0; curStream < AUDIO_STREAM_FOR_POLICY_CNT; curStream++) {
+                        if (!outputDesc->isStreamActive((audio_stream_type_t)curStream)) {
+                            continue;
+                        }
+                        if ((curStream == stream) && (samplingRate == outputDesc->mSamplingRate) &&
+                             audio_formats_match(format, outputDesc->mFormat) &&
+                             (channelMask == outputDesc->mChannelMask)) {
+                            if (session == outputDesc->mDirectClientSession) {
+                                outputDesc->mDirectOpenCount++;
+                                ALOGV("getOutput() reusing direct output %d for session %d",
+                                mOutputs.keyAt(i), session);
+                                return mOutputs.keyAt(i);
+                            } else {
+                                ALOGV("getOutput() do not reuse direct output because current client (%d) "
+                                      "is not the same as requesting client (%d)",
+                                      outputDesc->mDirectClientSession, session);
+                                goto non_direct_output;
+                            }
                         }
                     }
                 }
