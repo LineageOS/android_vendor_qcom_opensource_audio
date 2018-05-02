@@ -1454,9 +1454,9 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevice(
         // in case direct voip is bypassed
         bool use_primary_out = true;
 
-        if ((channelMask == 1) &&
-                (samplingRate == 8000 || samplingRate == 16000 ||
-                samplingRate == 32000 || samplingRate == 48000)) {
+        if ((config->channel_mask == 1) &&
+                (config->sample_rate == 8000 || config->sample_rate == 16000 ||
+                config->sample_rate == 32000 || config->sample_rate == 48000)) {
             // Allow Voip direct output only if:
             // audio mode is MODE_IN_COMMUNCATION; AND
             // voip output is not opened already; AND
@@ -1479,11 +1479,11 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevice(
             }
 
             if ((voipOutCount == 0) &&
-                ((voipSampleRate == 0) || (voipSampleRate == samplingRate))) {
+                ((voipSampleRate == 0) || (voipSampleRate == config->sample_rate))) {
                 char propValue[PROPERTY_VALUE_MAX] = {0};
                 property_get("vendor.voice.path.for.pcm.voip", propValue, "0");
                 bool voipPcmSysPropEnabled = !strncmp("true", propValue, sizeof("true"));
-                if (voipPcmSysPropEnabled && (format == AUDIO_FORMAT_PCM_16_BIT)) {
+                if (voipPcmSysPropEnabled && (config->format == AUDIO_FORMAT_PCM_16_BIT)) {
                     *flags = (audio_output_flags_t)(AUDIO_OUTPUT_FLAG_VOIP_RX |
                                                  AUDIO_OUTPUT_FLAG_DIRECT);
                     ALOGD("Set VoIP and Direct output flags for PCM format");
@@ -2271,29 +2271,6 @@ status_t AudioPolicyManagerCustom::stopInput(audio_io_handle_t input,
     }
 #endif
     return status;
-}
-
-void AudioPolicyManagerCustom::closeAllInputs() {
-    bool patchRemoved = false;
-
-    for(size_t input_index = mInputs.size(); input_index > 0; input_index--) {
-        sp<AudioInputDescriptor> inputDesc = mInputs.valueAt(input_index-1);
-        ssize_t patch_index = mAudioPatches.indexOfKey(inputDesc->getPatchHandle());
-        if (patch_index >= 0) {
-            sp<AudioPatch> patchDesc = mAudioPatches.valueAt(patch_index);
-            (void) /*status_t status*/ mpClientInterface->releaseAudioPatch(patchDesc->mAfPatchHandle, 0);
-            mAudioPatches.removeItemsAt(patch_index);
-            patchRemoved = true;
-        }
-        mpClientInterface->closeInput(mInputs.keyAt(input_index-1));
-    }
-    mInputs.clear();
-    SoundTrigger::setCaptureState(false);
-    nextAudioPortGeneration();
-
-    if (patchRemoved) {
-        mpClientInterface->onAudioPatchListUpdate();
-    }
 }
 
 AudioPolicyManagerCustom::AudioPolicyManagerCustom(AudioPolicyClientInterface *clientInterface)
