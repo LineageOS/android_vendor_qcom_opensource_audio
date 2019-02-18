@@ -1493,8 +1493,7 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevice(
        }
 
 #ifdef COMPRESS_VOIP_ENABLED
-    if ((mEngine->getPhoneState() == AUDIO_MODE_IN_COMMUNICATION) &&
-        (stream == AUDIO_STREAM_VOICE_CALL) &&
+    if (stream == AUDIO_STREAM_VOICE_CALL &&
         audio_is_linear_pcm(config->format)) {
         // let voice stream to go with primary output by default
         // in case direct voip is bypassed
@@ -1542,8 +1541,7 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevice(
             *flags = (audio_output_flags_t)(AUDIO_OUTPUT_FLAG_FAST|AUDIO_OUTPUT_FLAG_PRIMARY);
         }
 #else
-    if (mEngine->getPhoneState() == AUDIO_MODE_IN_COMMUNICATION &&
-        stream == AUDIO_STREAM_VOICE_CALL &&
+    if (stream == AUDIO_STREAM_VOICE_CALL &&
         audio_is_linear_pcm(config->format)) {
         //check if VoIP output is not opened already
         bool voip_pcm_already_in_use = false;
