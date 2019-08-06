@@ -16,6 +16,24 @@
       "revId": "803da959d9b94b1c228ea296357677b7832c5622",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86e7cb38_b19cbcc8",
+        "filename": "policy_hal/AudioPolicyManager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2263,
+      "author": {
+        "id": 19730
+      },
+      "writtenOn": "2019-08-06T12:00:25Z",
+      "side": 1,
+      "message": "It is not duplicated, as both are inside if clauses.\nHowever, we shouldn\u0027t be trying to instantiate (in either of the cases) policyMix before the validation checking if inputDesk-\u003emPolicyMix isn\u0027t NULL.",
+      "parentUuid": "154b9e2d_f1056736",
+      "revId": "803da959d9b94b1c228ea296357677b7832c5622",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
     }
   ]
 }
