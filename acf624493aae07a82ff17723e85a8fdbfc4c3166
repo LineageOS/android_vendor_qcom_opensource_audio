@@ -34,6 +34,24 @@
       "revId": "acf624493aae07a82ff17723e85a8fdbfc4c3166",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "414df8a5_c6348275",
+        "filename": "policy_hal/AudioPolicyManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2240,
+      "author": {
+        "id": 19730
+      },
+      "writtenOn": "2019-08-06T12:44:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f4cfa2b7_b1a6d2cd",
+      "revId": "acf624493aae07a82ff17723e85a8fdbfc4c3166",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
