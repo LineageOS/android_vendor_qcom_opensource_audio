@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "deb20053_3ac25563",
+        "filename": "policy_hal/AudioPolicyManager.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2240,
+      "author": {
+        "id": 19730
+      },
+      "writtenOn": "2019-08-06T12:16:21Z",
+      "side": 1,
+      "message": "If I\u0027m reading this right, you can do this only if inputDesc-\u003emPolicyMix !\u003d NULL, which you are no longer validating.",
+      "revId": "acf624493aae07a82ff17723e85a8fdbfc4c3166",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
+    }
+  ]
+}
