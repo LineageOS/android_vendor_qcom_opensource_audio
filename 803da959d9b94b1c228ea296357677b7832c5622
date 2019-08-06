@@ -34,6 +34,24 @@
       "revId": "803da959d9b94b1c228ea296357677b7832c5622",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "680e03fa_cd1decc6",
+        "filename": "policy_hal/AudioPolicyManager.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 2263,
+      "author": {
+        "id": 10067
+      },
+      "writtenOn": "2019-08-06T12:03:56Z",
+      "side": 1,
+      "message": "b-but they are both under the same scope.",
+      "parentUuid": "86e7cb38_b19cbcc8",
+      "revId": "803da959d9b94b1c228ea296357677b7832c5622",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": true
     }
   ]
 }
