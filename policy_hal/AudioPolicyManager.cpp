@@ -993,7 +993,8 @@ void AudioPolicyManagerCustom::setForceUse(audio_policy_force_use_t usage,
     for (size_t i = mOutputs.size(); i > 0; i--) {
         sp<SwAudioOutputDescriptor> outputDesc = mOutputs.valueAt(i-1);
         DeviceVector newDevices = getNewOutputDevices(outputDesc, true /*fromCache*/);
-        if ((mEngine->getPhoneState() != AUDIO_MODE_IN_CALL) || (outputDesc != mPrimaryOutput)) {
+        if (outputDesc->isActive() && ((mEngine->getPhoneState() != AUDIO_MODE_IN_CALL) ||
+            (outputDesc != mPrimaryOutput))) {
             waitMs = setOutputDevices(outputDesc, newDevices, !newDevices.isEmpty(),
                                      delayMs);
 
@@ -1706,6 +1707,13 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevices(
         goto non_direct_output;
     }
 
+    if (property_get_bool("vendor.audio.pcm.direct.disable", false /* default_value */) &&
+                audio_is_linear_pcm(config->format)) {
+        ALOGD(":%s Force route mch pcm to deep buffer", __func__);
+        forced_deep = true;
+        goto non_direct_output;
+    }
+
     // Do not allow offloading if one non offloadable effect is enabled or MasterMono is enabled.
     // This prevents creating an offloaded track and tearing it down immediately after start
     // when audioflinger detects there is an active non offloadable effect.
@@ -1751,7 +1759,7 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevices(
                     // reuse direct output if currently open by the same client
                     // and configured with same parameters
                     if ((config->sample_rate == desc->mSamplingRate) &&
-                        audio_formats_match(config->format, desc->mFormat) &&
+                        (config->format == desc->mFormat) &&
                         (channelMask == desc->mChannelMask) &&
                         (session == desc->mDirectClientSession)) {
                         desc->mDirectOpenCount++;
@@ -1788,8 +1796,7 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevices(
         // only accept an output with the requested parameters
         if (status != NO_ERROR ||
             (config->sample_rate != 0 && config->sample_rate != outputDesc->mSamplingRate) ||
-            (config->format != AUDIO_FORMAT_DEFAULT &&
-                     !audio_formats_match(config->format, outputDesc->mFormat)) ||
+            (config->format != AUDIO_FORMAT_DEFAULT && config->format != outputDesc->mFormat) ||
             (channelMask != 0 && channelMask != outputDesc->mChannelMask)) {
             ALOGV("getOutputForDevice() failed opening direct output: output %d sample rate %d %d,"
                     "format %d %d, channel mask %04x %04x", output, config->sample_rate,
