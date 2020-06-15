@@ -322,7 +322,8 @@ status_t AudioPolicyManagerCustom::setDeviceConnectionStateInt(audio_devices_t d
         const DeviceVector msdOutDevices = getMsdAudioOutDevices();
         for (size_t i = 0; i < mOutputs.size(); i++) {
             sp<SwAudioOutputDescriptor> desc = mOutputs.valueAt(i);
-            if ((mEngine->getPhoneState() != AUDIO_MODE_IN_CALL) || (desc != mPrimaryOutput)) {
+            if (desc->isActive() && ((mEngine->getPhoneState() != AUDIO_MODE_IN_CALL) ||
+                (desc != mPrimaryOutput))) {
                 DeviceVector newDevices = getNewOutputDevices(desc, true /*fromCache*/);
                 // do not force device change on duplicated output because if device is 0, it will
                 // also force a device 0 for the two outputs it is duplicated to which may override
@@ -1442,9 +1443,14 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevices(
         return 0;
     }
 
-    if (mApmConfigs->isCompressVOIPEnabled()) {
-        if (stream == AUDIO_STREAM_VOICE_CALL &&
-            audio_is_linear_pcm(config->format)) {
+     /*
+      * Check for VOIP Flag override for voice streams using linear pcm,
+      * but not when intended for uplink device(i.e. Telephony Tx)
+      */
+     if (stream == AUDIO_STREAM_VOICE_CALL &&
+        audio_is_linear_pcm(config->format) &&
+        !devices.onlyContainsDevicesWithType(AUDIO_DEVICE_OUT_TELEPHONY_TX)) {
+        if (mApmConfigs->isCompressVOIPEnabled()) {
             // let voice stream to go with primary output by default
             // in case direct voip is bypassed
             bool use_primary_out = true;
@@ -1488,13 +1494,9 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevices(
             if (use_primary_out) {
                 *flags = (audio_output_flags_t)(AUDIO_OUTPUT_FLAG_FAST|AUDIO_OUTPUT_FLAG_PRIMARY);
             }
-        }
-    } else {
-        if (stream == AUDIO_STREAM_VOICE_CALL &&
-            audio_is_linear_pcm(config->format) &&
-            (config->channel_mask == 1) &&
-            (config->sample_rate == 8000 || config->sample_rate == 16000 ||
-            config->sample_rate == 32000 || config->sample_rate == 48000)) {
+        } else if ((config->channel_mask == 1) &&
+                   (config->sample_rate == 8000 || config->sample_rate == 16000 ||
+                    config->sample_rate == 32000 || config->sample_rate == 48000)) {
             //check if VoIP output is not opened already
             bool voip_pcm_already_in_use = false;
             for (size_t i = 0; i < mOutputs.size(); i++) {
@@ -1518,7 +1520,7 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevices(
                 ALOGV("Set VoIP and Direct output flags for PCM format");
             }
         }
-    } /* compress_voip_enabled */
+    } /* voip flag override block end */
 
     //IF VOIP is going to be started at the same time as when
     //vr is enabled, get VOIP to fallback to low latency
@@ -1767,8 +1769,9 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevices(
         // if multiple concurrent offload decode is supported
         // do no check for reuse and also don't close previous output if its offload
         // previous output will be closed during track destruction
-        if (!mApmConfigs->isAudioMultipleOffloadEnable() &&
-                ((*flags & AUDIO_OUTPUT_FLAG_DIRECT) != 0)) {
+        if (!(mApmConfigs->isAudioMultipleOffloadEnable() &&
+                ((*flags & AUDIO_OUTPUT_FLAG_DIRECT) != 0) &&
+                ((*flags & AUDIO_OUTPUT_FLAG_MMAP_NOIRQ) == 0))) {
             for (size_t i = 0; i < mOutputs.size(); i++) {
                 sp<SwAudioOutputDescriptor> desc = mOutputs.valueAt(i);
                 if (!desc->isDuplicated() && (profile == desc->mProfile)) {
