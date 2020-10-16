@@ -1,3 +1,5 @@
+#Diable custom APM
+USE_CUSTOM_AUDIO_POLICY :=0
 ifneq ($(USE_LEGACY_AUDIO_POLICY), 1)
 ifeq ($(USE_CUSTOM_AUDIO_POLICY), 1)
 LOCAL_PATH := $(call my-dir)
