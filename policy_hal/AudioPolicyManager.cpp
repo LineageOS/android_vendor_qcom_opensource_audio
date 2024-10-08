@@ -15,6 +15,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Changes from Qualcomm Innovation Center, Inc. are provided under the following license:
+ * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause-Clear
  */
 
 #define LOG_TAG "AudioPolicyManagerCustom"
@@ -1435,6 +1439,10 @@ audio_io_handle_t AudioPolicyManagerCustom::getOutputForDevices(
     audio_channel_mask_t channelMask = forceMutingHaptic
             ? (config->channel_mask & ~AUDIO_CHANNEL_HAPTIC_ALL) : config->channel_mask;
 
+    ALOGV("%s: stream:%d, flags:0x%08X, sample rate:%d, channel_mask: 0x%08X,
+           format:0x%08X", __func__, stream, *flags, config->sample_rate,
+           channelMask, config->format);
+
     if (stream < AUDIO_STREAM_MIN || stream >= AUDIO_STREAM_CNT) {
         ALOGE("%s: invalid stream %d", __func__, stream);
         return AUDIO_IO_HANDLE_NONE;
@@ -1877,7 +1885,8 @@ non_direct_output:
             ALOGI("FLAG None hence request for a primary output");
         }
 
-        output = selectOutput(outputs, *flags, config->format, channelMask);
+        output = selectOutput(outputs, *flags, config->format,
+                              channelMask, config->sample_rate);
     }
 
     ALOGW_IF((output == 0), "getOutputForDevice() could not find output for stream %d, "
