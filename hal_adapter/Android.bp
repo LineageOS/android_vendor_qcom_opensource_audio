@@ -1,31 +1,3 @@
-aidl_interface {
-    name: "qti-audio-types-aidl",
-    stability: "vintf",
-    owner: "qcom",
-    system_ext_specific: true,
-    vendor_available: true,
-    local_include_dir: "aidl",
-    srcs: [
-        "aidl/qti/audio/core/VString.aidl",
-    ],
-    backend: {
-        cpp: {
-            enabled: false,
-        },
-        java: {
-            enabled: false,
-        },
-    },
-    versions_with_info: [
-        {
-            version: "1",
-            imports: [],
-        },
-
-    ],
-    frozen: true,
-}
-
 cc_library {
     name: "libaudiohalvendorextn",
     system_ext_specific: true,
