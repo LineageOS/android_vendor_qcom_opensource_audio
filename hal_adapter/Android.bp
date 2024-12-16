@@ -40,7 +40,8 @@ cc_library {
     ],
 
     shared_libs: [
-        "av-audio-types-aidl-V1-ndk",
+        //KEYSTONE(Icb42f2f0f5c3fafe675b8a46342a1dbe90ede111,b/380131835)
+        "av-audio-types-aidl-ndk",
         "libbinder_ndk",
         "libbase",
         "qti-audio-types-aidl-V1-ndk",
