@@ -96,6 +96,8 @@ PRODUCT_PRODUCT_PROPERTIES += aaudio.mmap_policy=2
 PRODUCT_PRODUCT_PROPERTIES += aaudio.mmap_exclusive_policy=2
 PRODUCT_PRODUCT_PROPERTIES += aaudio.hw_burst_min_usec=2000
 
+PRODUCT_PRODUCT_PROPERTIES += audio.timecheck.timeout_duration_ms=8000
+
 # for HIDL related packages
 PRODUCT_PACKAGES += \
     android.hardware.audio@4.0 \
