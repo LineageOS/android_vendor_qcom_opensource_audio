@@ -55,3 +55,14 @@ cc_library {
         "-DBACKEND_NDK",
     ],
 }
+
+cc_binary {
+    name: "qtiaudiohalvendorextn",
+    vendor: true,
+    relative_install_path: "hw",
+    srcs: ["main.cpp"],
+    shared_libs: [
+        "libaudiohalvendorextn",
+        "libbinder_ndk",
+    ],
+}
