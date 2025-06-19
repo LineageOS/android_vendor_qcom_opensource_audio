@@ -66,7 +66,7 @@ getVendorParameterAsVString(const std::string& key, const std::string& value) {
     ::aidl::qti::audio::core::VString parcel;
     param.id = key;
     parcel.value = value;
-    if (param.ext.setParcelable(parcel) != android::OK) {
+    if (param.ext.setParcelable(parcel) != STATUS_OK) {
         LOG(ERROR) << __func__ << ": failed to set parcel for "
                    << parcel.descriptor;
     }

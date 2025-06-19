@@ -29,6 +29,7 @@ aidl_interface {
 cc_library {
     name: "libaudiohalvendorextn",
     system_ext_specific: true,
+    vendor_available: true,
     srcs: ["HalAdapterVendorExtension.cpp"],
 
     export_include_dirs: [
