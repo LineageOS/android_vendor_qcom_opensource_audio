@@ -15,7 +15,8 @@ MM_AUDIO += libaudio-resampler
 MM_AUDIO += libaudioprocessing
 MM_AUDIO += libaudiopolicymanagerdefault
 MM_AUDIO += libaudiopolicyenginedefault
-
+MM_AUDIO += autoeffects
+MM_AUDIO += autoeffects.xml
 MM_AUDIO += mixerops_objdump
 MM_AUDIO += test-mixer
 MM_AUDIO += test-resampler
