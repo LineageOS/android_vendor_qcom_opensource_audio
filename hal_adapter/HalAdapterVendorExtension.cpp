@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2023-2024 Qualcomm Innovation Center, Inc. All rights reserved.
+/**
+ * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
  * SPDX-License-Identifier: BSD-3-Clause-Clear
  */
 
@@ -86,13 +86,12 @@ std::optional<std::string> getStringForVendorParameterAsVString(
 }
 
 ::ndk::ScopedAStatus HalAdapterVendorExtension::parseVendorParameterIds(
-    ::aidl::android::media::audio::IHalAdapterVendorExtension::ParameterScope
-        in_scope,
+    const ParameterScope& in_scope,
     const std::string& in_rawKeys, std::vector<std::string>* _aidl_return) {
     *_aidl_return = getVectorFromString(in_rawKeys);
 
     LOG(VERBOSE) << __func__
-              << ": scope:" << ::aidl::android::media::audio::toString(in_scope)
+              << ": scope:" << in_scope.toString()
               << ", raw keys:" << in_rawKeys << " ==> VendorParameter Ids:"
               << std::accumulate(_aidl_return->cbegin(), _aidl_return->cend(),
                                  std::string(""), [](auto prev, auto ele) {
@@ -103,8 +102,7 @@ std::optional<std::string> getStringForVendorParameterAsVString(
 }
 
 ::ndk::ScopedAStatus HalAdapterVendorExtension::parseVendorParameters(
-    ::aidl::android::media::audio::IHalAdapterVendorExtension::ParameterScope
-        in_scope,
+    const ParameterScope& in_scope,
     const std::string& in_rawKeysAndValues,
     std::vector<::aidl::android::hardware::audio::core::VendorParameter>*
         out_syncParameters,
@@ -125,7 +123,7 @@ std::optional<std::string> getStringForVendorParameterAsVString(
 
     LOG(VERBOSE)
         << __func__
-        << ": scope:" << ::aidl::android::media::audio::toString(in_scope)
+        << ": scope:" << in_scope.toString()
         << ", raw keyandvalues:" << in_rawKeysAndValues
         << ", VendorParameters Ids size:" << out_syncParameters->size()
         << " ==> "
@@ -161,8 +159,7 @@ HalAdapterVendorExtension::parseBluetoothLeReconfigureOffload(
 }
 
 ::ndk::ScopedAStatus HalAdapterVendorExtension::processVendorParameters(
-    ::aidl::android::media::audio::IHalAdapterVendorExtension::ParameterScope
-        in_scope,
+    const ParameterScope& in_scope,
     const std::vector<::aidl::android::hardware::audio::core::VendorParameter>&
         in_parameters,
     std::string* _aidl_return) {
@@ -180,7 +177,7 @@ HalAdapterVendorExtension::parseBluetoothLeReconfigureOffload(
     }
     *_aidl_return = keyValuesString;
     LOG(VERBOSE) << __func__
-              << ": scope:" << ::aidl::android::media::audio::toString(in_scope)
+              << ": scope:" << in_scope.toString()
               << ", parameters size: " << in_parameters.size()
               << ", VendorParameters Ids:"
               << std::accumulate(in_parameters.cbegin(), in_parameters.cend(),
