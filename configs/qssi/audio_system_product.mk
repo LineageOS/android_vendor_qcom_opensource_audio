@@ -15,7 +15,8 @@ MM_AUDIO += libaudio-resampler
 MM_AUDIO += libaudioprocessing
 MM_AUDIO += libaudiopolicymanagerdefault
 MM_AUDIO += libaudiopolicyenginedefault
-
+MM_AUDIO += autoeffects
+MM_AUDIO += autoeffects.xml
 MM_AUDIO += mixerops_objdump
 MM_AUDIO += test-mixer
 MM_AUDIO += test-resampler
@@ -25,8 +26,18 @@ MM_AUDIO += resampler_tests
 # AIDL AHAL VENDOR EXTENSION
 MM_AUDIO += libaudiohalvendorextn
 
+ifneq ($(TARGET_BOARD_AUTO),true)
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
     ro.audio.ihaladaptervendorextension_enabled=true
+else
+ifeq ($(TARGET_FWK_SUPPORTS_FULL_VALUEADDS), true)
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    ro.audio.ihaladaptervendorextension_enabled=true
+else
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    ro.audio.ihaladaptervendorextension_enabled=false
+endif
+endif
 
 MM_AUDIO_DBG := MhaPlayerDemoApp
 MM_AUDIO_DBG += MhaRecorderDemoApp
