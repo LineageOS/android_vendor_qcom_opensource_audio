@@ -16,13 +16,13 @@ class HalAdapterVendorExtension
     : public ::aidl::android::media::audio::BnHalAdapterVendorExtension {
    public:
     ::ndk::ScopedAStatus parseVendorParameterIds(
-        ::aidl::android::media::audio::IHalAdapterVendorExtension::
-            ParameterScope in_scope,
+        const ::aidl::android::media::audio::IHalAdapterVendorExtension::
+            ParameterScope& in_scope,
         const std::string& in_rawKeys,
         std::vector<std::string>* _aidl_return) override;
     ::ndk::ScopedAStatus parseVendorParameters(
-        ::aidl::android::media::audio::IHalAdapterVendorExtension::
-            ParameterScope in_scope,
+        const ::aidl::android::media::audio::IHalAdapterVendorExtension::
+            ParameterScope& in_scope,
         const std::string& in_rawKeysAndValues,
         std::vector<::aidl::android::hardware::audio::core::VendorParameter>*
             out_syncParameters,
@@ -37,8 +37,8 @@ class HalAdapterVendorExtension
         std::vector<::aidl::android::hardware::audio::core::VendorParameter>*
             _aidl_return) override;
     ::ndk::ScopedAStatus processVendorParameters(
-        ::aidl::android::media::audio::IHalAdapterVendorExtension::
-            ParameterScope in_scope,
+        const ::aidl::android::media::audio::IHalAdapterVendorExtension::
+            ParameterScope& in_scope,
         const std::vector<
             ::aidl::android::hardware::audio::core::VendorParameter>&
             in_parameters,
